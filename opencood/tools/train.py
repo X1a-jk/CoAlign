@@ -32,7 +32,6 @@ def train_parser():
 def main():
     opt = train_parser()
     hypes = yaml_utils.load_yaml(opt.hypes_yaml, opt)
-
     print('Dataset Building')
     opencood_train_dataset = build_dataset(hypes, visualize=False, train=True)
     opencood_validate_dataset = build_dataset(hypes,
@@ -56,7 +55,7 @@ def main():
                             drop_last=True,
                             prefetch_factor=2)
 
-    print('Creating Model')
+    print('--Creating Model--')
     model = train_utils.create_model(hypes)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
@@ -111,6 +110,7 @@ def main():
             optimizer.zero_grad()
             batch_data = train_utils.to_device(batch_data, device)
             batch_data['ego']['epoch'] = epoch
+
             ouput_dict = model(batch_data['ego'])
             
             final_loss = criterion(ouput_dict, batch_data['ego']['label_dict'])

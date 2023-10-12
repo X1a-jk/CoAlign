@@ -1,0 +1,334 @@
+{'name': 'v2xverse_where2comm_multiclass', 'root_dir': '/remote-home/share/InterFuser/dataset_cop3_lidarmini', 'test_dir': '/remote-home/share/InterFuser/dataset_cop3_lidarmini', 'validate_dir': '/remote-home/share/InterFuser/dataset_cop3_lidarmini', 'yaml_parser': 'load_point_pillar_params', 'train_params': {'batch_size': 4, 'epoches': 40, 'eval_freq': 1, 'max_cav': 5, 'save_freq': 1}, 'input_source': ['lidar'], 'label_type': 'lidar', 'comm_range': 200, 'fusion': {'args': {'clip_pc': False, 'proj_first': False}, 'core_method': 'intermediatemulticlass', 'dataset': 'v2xverse'}, 'preprocess': {'core_method': 'SpVoxelPreprocessor', 'args': {'max_points_per_voxel': 32, 'max_voxel_test': 70000, 'max_voxel_train': 32000, 'voxel_size': [0.125, 0.125, 36]}, 'cav_lidar_range': [-36, -12, -22, 36, 12, 14]}, 'data_augment': [{'ALONG_AXIS_LIST': ['x'], 'NAME': 'random_world_flip'}, {'NAME': 'random_world_rotation', 'WORLD_ROT_ANGLE': [-0.78539816, 0.78539816]}, {'NAME': 'random_world_scaling', 'WORLD_SCALE_RANGE': [0.95, 1.05]}], 'postprocess': {'core_method': 'VoxelPostprocessor', 'anchor_args': {'D': 1, 'H': 192, 'W': 576, 'cav_lidar_range': [-36, -12, -22, 36, 12, 14], 'feature_stride': 2, 'h': 1.56, 'l': 3.9, 'num': 1, 'r': [0], 'vd': 36, 'vh': 0.125, 'vw': 0.125, 'w': 1.6}, 'dir_args': {'anchor_yaw': [0], 'dir_offset': 0.7853, 'num_bins': 1}, 'gt_range': [-36, -12, -22, 36, 12, 14], 'max_num': 100, 'nms_thresh': 0.15, 'order': 'hwl', 'target_args': {'neg_threshold': 0.45, 'pos_threshold': 0.6, 'score_threshold': 0.2}}, 'model': {'core_method': 'center_point_where2comm_multiclass', 'args': {'anchor_number': 3, 'voxel_size': [0.125, 0.125, 36], 'lidar_range': [-36, -12, -22, 36, 12, 14], 'max_cav': 5, 'multi_class': True, 'out_size_factor': 2, 'supervise_single': True, 'base_bev_backbone': {'compression': 0, 'layer_nums': [3, 4, 5], 'layer_strides': [2, 2, 2], 'num_filters': [64, 128, 256], 'num_upsample_filter': [128, 128, 128], 'resnet': True, 'upsample_strides': [1, 2, 4], 'voxel_size': [0.125, 0.125, 36]}, 'fusion_args': {'agg_operator': {'feature_dim': 256, 'mode': 'MAX'}, 'downsample_rate': 2, 'dropout_rate': 0, 'in_channels': 256, 'layer_nums': [3, 4, 5], 'multi_scale': False, 'n_head': 8, 'num_filters': [64, 128, 256], 'only_attention': True, 'voxel_size': [0.125, 0.125, 36]}, 'pillar_vfe': {'num_filters': [64], 'use_absolute_xyz': True, 'use_norm': True, 'with_distance': False}, 'point_pillar_scatter': {'num_features': 64, 'grid_size': array([576, 192,   1])}, 'shrink_header': {'dim': [128], 'input_dim': 384, 'kernal_size': [3], 'padding': [1], 'stride': [1]}}}, 'loss': {'core_method': 'center_point_loss_multiclass', 'args': {'cls_weight': 5.0, 'code_weights': [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 5.0, 5.0], 'loc_weight': 1.0, 'target_assigner_config': {'box_coder': 'ResidualCoder', 'cav_lidar_range': [-36, -12, -22, 36, 12, 14], 'gaussian_overlap': 0.1, 'max_objs': 40, 'min_radius': 2, 'out_size_factor': 2, 'voxel_size': [0.125, 0.125, 36]}}}, 'optimizer': {'args': {'eps': 1e-10, 'weight_decay': 0.0002}, 'core_method': 'Adam', 'lr': 0.0005}, 'lr_scheduler': {'core_method': 'multistep', 'gamma': 0.1, 'step_size': [8, 15]}}
+Dataset Building
+Dataset dir: /remote-home/share/InterFuser/dataset_cop3_lidarmini
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+Sub route dir nums: 52644
+Dataset dir: /remote-home/share/InterFuser/dataset_cop3_lidarmini
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+25
+Sub route dir nums: 11004
+Creating Model
+centerpointwhere2commmulticlass(
+  (pillar_vfe): PillarVFE(
+    (pfn_layers): ModuleList(
+      (0): PFNLayer(
+        (linear): Linear(in_features=10, out_features=64, bias=False)
+        (norm): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      )
+    )
+  )
+  (scatter): PointPillarScatter()
+  (backbone): ResNetBEVBackbone(
+    (resnet): ResNetModified(
+      (layer0): Sequential(
+        (0): BasicBlock(
+          (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (downsample): Sequential(
+            (0): Conv2d(64, 64, kernel_size=(1, 1), stride=(2, 2), bias=False)
+            (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+        (1): BasicBlock(
+          (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (2): BasicBlock(
+          (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (layer1): Sequential(
+        (0): BasicBlock(
+          (conv1): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (downsample): Sequential(
+            (0): Conv2d(64, 128, kernel_size=(1, 1), stride=(2, 2), bias=False)
+            (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+        (1): BasicBlock(
+          (conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (2): BasicBlock(
+          (conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (3): BasicBlock(
+          (conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+      (layer2): Sequential(
+        (0): BasicBlock(
+          (conv1): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (downsample): Sequential(
+            (0): Conv2d(128, 256, kernel_size=(1, 1), stride=(2, 2), bias=False)
+            (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+        (1): BasicBlock(
+          (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (2): BasicBlock(
+          (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (3): BasicBlock(
+          (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (4): BasicBlock(
+          (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (relu): ReLU(inplace=True)
+          (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+      )
+    )
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): ConvTranspose2d(64, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (1): Sequential(
+        (0): ConvTranspose2d(128, 128, kernel_size=(2, 2), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (2): Sequential(
+        (0): ConvTranspose2d(256, 128, kernel_size=(4, 4), stride=(4, 4), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+    )
+  )
+  (shrink_conv): DownsampleConv(
+    (layers): ModuleList(
+      (0): DoubleConv(
+        (double_conv): Sequential(
+          (0): Conv2d(384, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (1): ReLU(inplace=True)
+          (2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (3): ReLU(inplace=True)
+        )
+      )
+    )
+  )
+  (fusion_net): Where2comm(
+    (fuse_modules): MaxFusion()
+  )
+  (cls_head): Conv2d(128, 3, kernel_size=(1, 1), stride=(1, 1))
+  (reg_head): Conv2d(128, 24, kernel_size=(1, 1), stride=(1, 1))
+)
+Training start
+learning rate 0.000500
+/root/anaconda3/envs/coalign/lib/python3.7/site-packages/torch/functional.py:445: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  /opt/conda/conda-bld/pytorch_1639180594101/work/aten/src/ATen/native/TensorShape.cpp:2157.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+[epoch 0][1/13161], || Loss: 75.1652 || Conf Loss: 22.6262 || Loc Loss: 52.5390
+[epoch 0][1/13161]_single, || Loss: 74.8802 || Conf Loss: 22.6023 || Loc Loss: 52.2779
+[epoch 0][2/13161], || Loss: 72.0255 || Conf Loss: 19.4032 || Loc Loss: 52.6223
+[epoch 0][2/13161]_single, || Loss: 71.0925 || Conf Loss: 19.9703 || Loc Loss: 51.1223
+[epoch 0][3/13161], || Loss: 150.0690 || Conf Loss: 99.8657 || Loc Loss: 50.2032
+[epoch 0][3/13161]_single, || Loss: 130.4918 || Conf Loss: 80.5473 || Loc Loss: 49.9445
+[epoch 0][4/13161], || Loss: 67.9325 || Conf Loss: 18.7202 || Loc Loss: 49.2123
+[epoch 0][4/13161]_single, || Loss: 68.3134 || Conf Loss: 19.5051 || Loc Loss: 48.8083
+[epoch 0][5/13161], || Loss: 72.7383 || Conf Loss: 21.0332 || Loc Loss: 51.7050
+[epoch 0][5/13161]_single, || Loss: 72.6586 || Conf Loss: 21.1460 || Loc Loss: 51.5126
+[epoch 0][6/13161], || Loss: 72.7848 || Conf Loss: 21.7919 || Loc Loss: 50.9929
+[epoch 0][6/13161]_single, || Loss: 72.8025 || Conf Loss: 22.2390 || Loc Loss: 50.5635
+[epoch 0][7/13161], || Loss: 72.3903 || Conf Loss: 21.9653 || Loc Loss: 50.4249
+[epoch 0][7/13161]_single, || Loss: 73.0522 || Conf Loss: 22.2704 || Loc Loss: 50.7817
+[epoch 0][8/13161], || Loss: 74.0734 || Conf Loss: 22.4596 || Loc Loss: 51.6138
+[epoch 0][8/13161]_single, || Loss: 74.2747 || Conf Loss: 22.7856 || Loc Loss: 51.4890
+[epoch 0][9/13161], || Loss: 72.0688 || Conf Loss: 22.6284 || Loc Loss: 49.4404
+[epoch 0][9/13161]_single, || Loss: 72.4717 || Conf Loss: 22.7982 || Loc Loss: 49.6735
+[epoch 0][10/13161], || Loss: 72.1160 || Conf Loss: 21.9325 || Loc Loss: 50.1835
+[epoch 0][10/13161]_single, || Loss: 71.4970 || Conf Loss: 22.2260 || Loc Loss: 49.2711
+[epoch 0][11/13161], || Loss: 69.1776 || Conf Loss: 22.1239 || Loc Loss: 47.0537
+[epoch 0][11/13161]_single, || Loss: 69.5446 || Conf Loss: 22.3817 || Loc Loss: 47.1629
+[epoch 0][12/13161], || Loss: 71.2966 || Conf Loss: 22.4950 || Loc Loss: 48.8016
+[epoch 0][12/13161]_single, || Loss: 71.0773 || Conf Loss: 22.3263 || Loc Loss: 48.7510
+[epoch 0][13/13161], || Loss: 71.6191 || Conf Loss: 22.0955 || Loc Loss: 49.5235
+[epoch 0][13/13161]_single, || Loss: 71.5535 || Conf Loss: 22.3979 || Loc Loss: 49.1555
+[epoch 0][14/13161], || Loss: 71.6189 || Conf Loss: 22.0215 || Loc Loss: 49.5974
+[epoch 0][14/13161]_single, || Loss: 71.8417 || Conf Loss: 21.9623 || Loc Loss: 49.8794
+[epoch 0][15/13161], || Loss: 71.3323 || Conf Loss: 22.7608 || Loc Loss: 48.5715
+[epoch 0][15/13161]_single, || Loss: 69.6150 || Conf Loss: 22.4901 || Loc Loss: 47.1250
+[epoch 0][16/13161], || Loss: 71.2495 || Conf Loss: 21.5276 || Loc Loss: 49.7219
+[epoch 0][16/13161]_single, || Loss: 70.4072 || Conf Loss: 21.7807 || Loc Loss: 48.6265
+[epoch 0][17/13161], || Loss: 69.9713 || Conf Loss: 21.2310 || Loc Loss: 48.7403
+[epoch 0][17/13161]_single, || Loss: 71.1811 || Conf Loss: 21.4667 || Loc Loss: 49.7144
+[epoch 0][18/13161], || Loss: 70.2990 || Conf Loss: 20.2634 || Loc Loss: 50.0355
+[epoch 0][18/13161]_single, || Loss: 67.7460 || Conf Loss: 20.4294 || Loc Loss: 47.3167
+[epoch 0][19/13161], || Loss: 65.7210 || Conf Loss: 19.4024 || Loc Loss: 46.3186
+[epoch 0][19/13161]_single, || Loss: 65.4946 || Conf Loss: 19.8127 || Loc Loss: 45.6819
+[epoch 0][20/13161], || Loss: 68.2513 || Conf Loss: 18.5194 || Loc Loss: 49.7318
+[epoch 0][20/13161]_single, || Loss: 67.2185 || Conf Loss: 19.0163 || Loc Loss: 48.2022
+[epoch 0][21/13161], || Loss: 64.1314 || Conf Loss: 16.3974 || Loc Loss: 47.7340
+[epoch 0][21/13161]_single, || Loss: 64.4353 || Conf Loss: 17.5766 || Loc Loss: 46.8587
+[epoch 0][22/13161], || Loss: 63.6012 || Conf Loss: 15.7494 || Loc Loss: 47.8518
+[epoch 0][22/13161]_single, || Loss: 64.7249 || Conf Loss: 17.2342 || Loc Loss: 47.4907
+[epoch 0][23/13161], || Loss: 61.2520 || Conf Loss: 15.5692 || Loc Loss: 45.6828
+[epoch 0][23/13161]_single, || Loss: 63.8689 || Conf Loss: 17.5176 || Loc Loss: 46.3513
+[epoch 0][24/13161], || Loss: 59.6745 || Conf Loss: 15.5189 || Loc Loss: 44.1556
+[epoch 0][24/13161]_single, || Loss: 61.5812 || Conf Loss: 16.9078 || Loc Loss: 44.6734
+[epoch 0][25/13161], || Loss: 50.7201 || Conf Loss: 17.0062 || Loc Loss: 33.7139
+[epoch 0][25/13161]_single, || Loss: 61.7440 || Conf Loss: 18.6797 || Loc Loss: 43.0643
+[epoch 0][26/13161], || Loss: 58.1466 || Conf Loss: 13.6654 || Loc Loss: 44.4811
+[epoch 0][26/13161]_single, || Loss: 60.7982 || Conf Loss: 16.3807 || Loc Loss: 44.4176
+[epoch 0][27/13161], || Loss: 57.7390 || Conf Loss: 12.9594 || Loc Loss: 44.7796
+[epoch 0][27/13161]_single, || Loss: 59.7097 || Conf Loss: 15.5935 || Loc Loss: 44.1162
+[epoch 0][28/13161], || Loss: 56.2340 || Conf Loss: 11.4916 || Loc Loss: 44.7424
+[epoch 0][28/13161]_single, || Loss: 60.5827 || Conf Loss: 15.2940 || Loc Loss: 45.2887
+Traceback (most recent call last):
+  File "/root/anaconda3/envs/coalign/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 990, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/root/anaconda3/envs/coalign/lib/python3.7/queue.py", line 179, in get
+    self.not_empty.wait(remaining)
+  File "/root/anaconda3/envs/coalign/lib/python3.7/threading.py", line 300, in wait
+    gotit = waiter.acquire(True, timeout)
+  File "/root/anaconda3/envs/coalign/lib/python3.7/site-packages/torch/utils/data/_utils/signal_handling.py", line 66, in handler
+    _error_if_any_worker_fails()
+RuntimeError: DataLoader worker (pid 20403) is killed by signal: Terminated. 
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "opencood/tools/train.py", line 198, in <module>
+    main()
+  File "opencood/tools/train.py", line 106, in main
+    for i, batch_data in enumerate(train_loader):
+  File "/root/anaconda3/envs/coalign/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 521, in __next__
+    data = self._next_data()
+  File "/root/anaconda3/envs/coalign/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 1186, in _next_data
+    idx, data = self._get_data()
+  File "/root/anaconda3/envs/coalign/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 1142, in _get_data
+    success, data = self._try_get_data()
+  File "/root/anaconda3/envs/coalign/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 1003, in _try_get_data
+    raise RuntimeError('DataLoader worker (pid(s) {}) exited unexpectedly'.format(pids_str)) from e
+RuntimeError: DataLoader worker (pid(s) 20403) exited unexpectedly

@@ -7,7 +7,7 @@ class BaseBEVBackbone(nn.Module):
     def __init__(self, model_cfg, input_channels):
         super().__init__()
         self.model_cfg = model_cfg
-
+        print(model_cfg)
         if 'layer_nums' in self.model_cfg:
 
             assert len(self.model_cfg['layer_nums']) == \

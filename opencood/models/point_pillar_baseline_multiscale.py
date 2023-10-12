@@ -19,7 +19,7 @@ class PointPillarBaselineMultiscale(nn.Module):
     """
     def __init__(self, args):
         super(PointPillarBaselineMultiscale, self).__init__()
-
+        print(args)
         self.pillar_vfe = PillarVFE(args['pillar_vfe'],
                                     num_point_features=4,
                                     voxel_size=args['voxel_size'],
