@@ -72,7 +72,8 @@ postprocess:
     score_threshold: 0.2
 
 model:
-  core_method: center_point_where2comm_multiclass
+        #core_method: center_point_where2comm_multiclass
+  core_method: point_pillar_core
   args:
     anchor_number: 3
     voxel_size: *voxel_size
@@ -91,12 +92,6 @@ model:
       resnet: true
       upsample_strides: [1, 2, 4]
       voxel_size: *voxel_size
-
-    compress_core:
-      out_channel: 16
-      top_k: 0.2
-      uniform_r: 0.5
-
 
     fusion_args:
       agg_operator:
@@ -118,8 +113,14 @@ model:
       use_norm: true
       with_distance: false
     point_pillar_scatter:
-      num_features: 64
+      num_features: &num_features_vfe 64
 
+    compress_core:
+      out_channels: &num_out_compressor 16
+      top_k: 0.01
+      uniform_r: 0.01
+      in_channels: *num_features_vfe
+      
     shrink_header:
       dim: [128]
       input_dim: 384
