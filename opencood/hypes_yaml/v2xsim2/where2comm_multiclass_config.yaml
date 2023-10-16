@@ -75,7 +75,7 @@ model:
         #core_method: center_point_where2comm_multiclass
   core_method: point_pillar_core
   args:
-    anchor_number: 3
+    anchor_number: &anchor_num 3
     voxel_size: *voxel_size
     lidar_range: *lidar_range
     max_cav: 5
@@ -94,6 +94,7 @@ model:
       voxel_size: *voxel_size
 
     fusion_args:
+      anchor_num: *anchor_num
       agg_operator:
         feature_dim: 256
         mode: MAX

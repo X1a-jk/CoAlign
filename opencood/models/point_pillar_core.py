@@ -9,7 +9,7 @@ from opencood.models.sub_modules.compress_core import CompressCore
 from opencood.models.sub_modules.naive_compress import NaiveCompressor
 # from opencood.models.sub_modules.dcn_net import DCNNet
 # from opencood.models.fuse_modules.where2comm import Where2comm
-from opencood.models.fuse_modules.where2comm_attn import Where2comm
+from opencood.models.fuse_modules.core_attn import Core
 import torch
 from functools import partial
 
@@ -42,7 +42,15 @@ class pointpillarcore(nn.Module):
             norm_fn(args['compress_core']['out_channels']),
             nn.ReLU(),
         )
-
+        self.channel_compressed = args['compress_core']['out_channels']
+        self.deconv = nn.Sequential(
+            nn.Conv2d(1, args['compress_core']['out_channels'], kernel_size=1, stride=1, padding=0, bias=False),
+            norm_fn(args['compress_core']['out_channels']),
+            nn.ReLU(),
+            nn.Conv2d(args['compress_core']['out_channels'], args['compress_core']['in_channels'], kernel_size=1, stride=1, padding=0, bias=False),
+            norm_fn(args['compress_core']['in_channels']),
+            nn.ReLU(),
+        )
         self.compressor = CompressCore(args['compress_core'], self.conv)
 
         self.out_channel = sum(args['base_bev_backbone']['num_upsample_filter'])
@@ -65,13 +73,20 @@ class pointpillarcore(nn.Module):
             self.dcn_net = DCNNet(args['dcn'])
 
         # self.fusion_net = TransformerFusion(args['fusion_args'])
-        self.fusion_net = Where2comm(args['fusion_args'])
+        self.fusion_net = Core(args['fusion_args'])
         self.multi_scale = args['fusion_args']['multi_scale']
-
+        '''
         self.cls_head = nn.Conv2d(self.out_channel, args['anchor_number'],
                                   kernel_size=1)
         self.reg_head = nn.Conv2d(self.out_channel, 8 * args['anchor_number'],
                                   kernel_size=1)
+        '''
+
+        self.cls_head = nn.Conv2d(args['compress_core']['out_channels'], args['anchor_number'],
+                                  kernel_size=1)
+        self.reg_head = nn.Conv2d(args['compress_core']['out_channels'], 8 * args['anchor_number'],
+                                  kernel_size=1)
+        
         if 'backbone_fix' in args.keys() and args['backbone_fix']:
             self.backbone_fix()
         
@@ -134,7 +149,11 @@ class pointpillarcore(nn.Module):
 
         batch_dict = self.compressor(batch_dict)
         spatial_features_2d = batch_dict['spatial_features_2d']
-            
+
+        encoded_feature = batch_dict['compressed_2d_feature']
+        
+        '''
+        #print(batch_dict['spatial_features'].shape)
         # downsample feature to reduce memory
         if self.shrink_flag:
             spatial_features_2d = self.shrink_conv(spatial_features_2d)
@@ -147,12 +166,19 @@ class pointpillarcore(nn.Module):
         # spatial_features_2d is [sum(cav_num), 256, 50, 176]
         # output only contains ego
         # [B, 256, 50, 176]
+        
+        
         psm_single = self.cls_head(spatial_features_2d)
         rm_single = self.reg_head(spatial_features_2d)
+        '''
+
+        psm_single = self.cls_head(encoded_feature)
+        rm_single = self.reg_head(encoded_feature)
 
         # print('spatial_features_2d: ', spatial_features_2d.shape)
 
         print("ready to fuse")
+        original_dims =  batch_dict['spatial_features'].shape
 
         if self.multi_scale:
             fused_feature, communication_rates, result_dict = self.fusion_net(batch_dict['spatial_features'],
@@ -163,8 +189,15 @@ class pointpillarcore(nn.Module):
             # downsample feature to reduce memory
             if self.shrink_flag:
                 fused_feature = self.shrink_conv(fused_feature)
+        
+        # without multi_scale
         else:
-            fused_feature, communication_rates, result_dict = self.fusion_net(spatial_features_2d,
+            fused_feature, communication_rates, result_dict = self.fusion_net(batch_dict['compressed_2d_feature'],
+                                            batch_dict['core_features'],
+                                            batch_dict['core_indices'],
+                                            original_dims,
+                                            self.channel_compressed,
+                                            self.deconv,
                                             psm_single,
                                             record_len,
                                             pairwise_t_matrix)

@@ -47,8 +47,8 @@ class CompressCore(nn.Module):
         assert C == self.in_channels
         print(input_sp_tensor.dense())
         '''
-        compressed = self.conv(features)
-        compressed = torch.sum(compressed, dim=1)
+        encoded = self.conv(features) # I_i^{down_arrow}
+        compressed = torch.sum(encoded, dim=1)
         features_selected = int(H * W * self.top_k)
         compressed_flattened = compressed.flatten(1)
         values, indices = compressed_flattened.topk(features_selected, dim=1, largest=True)
@@ -61,8 +61,8 @@ class CompressCore(nn.Module):
         idx = torch.randperm(N)
         indices = indices[idx][:,:new_features_selected]
         
-        sparse_features = torch.zeros((N,new_features_selected))
-        sparse_indices = torch.zeros((N,new_features_selected,2), dtype=torch.int)
+        sparse_features = torch.zeros((N,new_features_selected), device=features.device)
+        sparse_indices = torch.zeros((N,new_features_selected,2), dtype=torch.int, device=features.device)
         for i in range(N):
             index_temp = indices[i]
             for j in range(len(index_temp)):
@@ -77,7 +77,7 @@ class CompressCore(nn.Module):
 
         batch_dict['core_features'] = sparse_features
         batch_dict['core_indices'] = sparse_indices
-        batch_dict['compressed_2d_feature'] = compressed
+        batch_dict['compressed_2d_feature'] = encoded
         '''
         encoded_spconv_tensor = batch_dict['encoded_spconv_tensor']
         spatial_features = encoded_spconv_tensor.dense()
